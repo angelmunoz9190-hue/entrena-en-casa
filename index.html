@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Entrena en casa</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap">
+<style>
+:root{--bg:#E9EFF3;--surface:#fff;--ink:#14213D;--mute:#5B6780;--line:#C9D3DD;--accent:#2F4BFF;--on-accent:#fff;--rest:#0E8A6D;--sun:#FFC83D;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101a2e;--surface:#182642;--ink:#EEF2F8;--mute:#9AA7C0;--line:#2B3C60;--accent:#7C8FFF;--on-accent:#101a2e;--rest:#47D3AE}}
+:root[data-theme="dark"]{--bg:#101a2e;--surface:#182642;--ink:#EEF2F8;--mute:#9AA7C0;--line:#2B3C60;--accent:#7C8FFF;--on-accent:#101a2e;--rest:#47D3AE}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+:root{--strength:#8A3FFC}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--strength:#B58CFF}}:root[data-theme="dark"]{--strength:#B58CFF}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45;min-height:100vh}
+main{max-width:560px;margin:0 auto;padding:24px 20px 40px}
+h1{font-size:clamp(2.4rem,9vw,3.4rem);line-height:1;margin:8px 0 10px;font-weight:800;letter-spacing:-.03em}
+h2{font-size:1rem;margin:26px 0 10px;font-weight:600}
+p{margin:0}
+.lead{color:var(--mute);max-width:44ch}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts label{cursor:pointer;position:relative}
+.opts input{position:absolute;opacity:0;pointer-events:none}
+.opts span{display:block;padding:10px 16px;border:2px solid var(--line);border-radius:999px;background:var(--surface);font-weight:600;font-size:.95rem}
+.opts input:checked+span{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.opts input:focus-visible+span,button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+button{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:14px 20px;font-weight:700;color:var(--ink);background:var(--surface);border:2px solid var(--line)}
+button.main{background:var(--accent);color:var(--on-accent);border-color:var(--accent);width:100%;font-size:1.15rem;padding:18px;margin-top:30px}
+.streak{margin-top:22px;color:var(--mute);font-size:.95rem}
+.hidden{display:none!important}
+summary{cursor:pointer;font-weight:800;font-size:1.2rem;margin-top:26px}
+.plist{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:8px}
+.plist li{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:10px 14px}
+.plist small{display:block;color:var(--mute)}
+.plist button,#pain button{padding:8px 14px;font-size:.9rem}
+#pain{display:flex;flex-wrap:wrap;gap:8px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:22px;max-width:320px}
+.cal b{text-align:center;font-size:.75rem;color:var(--mute)}
+.cal i{aspect-ratio:1;border-radius:8px;background:var(--line)}
+.cal i.on{background:var(--accent)}
+.cal i.today{outline:2px solid var(--ink)}
+.cal i.fut{opacity:.35}
+#demo{display:inline-block;margin-top:6px;color:var(--accent);font-weight:600}
+.plist a{color:var(--accent)}
+.figw{width:170px;margin:10px auto 0}
+.figw svg{width:100%;height:auto;display:block}
+.lb{fill:none;stroke:var(--accent);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.lb.far{opacity:.45}
+#hd{fill:none;stroke:var(--accent);stroke-width:3}
+.gl{stroke:var(--line);stroke-width:2}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.nums label{font-size:.85rem;font-weight:600;color:var(--mute)}
+.nums input{display:block;width:100%;margin-top:4px;padding:12px;border:2px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;font-size:1.1rem}
+.nums input:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.warn{margin-top:18px;padding:14px;border-radius:14px;border:2px solid #C2410C;background:var(--surface);font-weight:600}
+.note{color:var(--mute);font-size:.9rem;margin:0 0 14px}
+button.link{background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;font-weight:600;font-size:inherit}
+.bar{display:flex;gap:4px;margin-bottom:20px}
+.bar i{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.bar i.done{background:var(--accent)}
+.bar i.now{background:var(--sun)}
+.phase{font-weight:800;font-size:1.1rem;color:var(--accent)}
+.phase.str{color:var(--strength)}
+.ring.str .fg{stroke:var(--strength)}
+.phase.rest{color:var(--rest)}
+.name{font-size:clamp(2rem,8vw,2.8rem);font-weight:800;line-height:1.05;letter-spacing:-.02em;margin:6px 0 4px}
+.cue{color:var(--mute);min-height:3em;max-width:46ch}
+.ring{position:relative;width:min(78vw,300px);aspect-ratio:1;margin:22px auto}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:12}
+.ring .bg{stroke:var(--line)}
+.ring .fg{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .25s linear,stroke .2s}
+.ring.rest .fg{stroke:var(--rest)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(4.5rem,24vw,7rem);font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+.next{text-align:center;color:var(--mute);margin-bottom:20px}
+.ctrl{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sum{display:flex;gap:12px;margin:24px 0}
+.sum div{flex:1;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:14px}
+.sum strong{display:block;font-size:2rem;line-height:1}
+@media (prefers-reduced-motion:reduce){.ring .fg{transition:none}}
+</style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2F4BFF">
+<link rel="icon" href="icon-192.png">
+</head>
+<body>
+<main>
+<section id="setup">
+  <h1>Entrena en casa</h1>
+  <p class="lead">Rutinas sin equipo que alternan bloques de HIIT con ejercicios de fuerza. Elige cuánto tiempo tienes y la app te guía ejercicio por ejercicio.</p>
+  <div id="res" class="warn hidden">Tienes una rutina sin terminar.
+    <div class="ctrl" style="margin-top:10px"><button id="rs">Reanudar</button><button id="rd">Descartar</button></div>
+  </div>
+  <details id="prof" open><summary>Tu perfil de salud</summary>
+  <h2>Sobre ti</h2>
+  <div class="nums">
+    <label>Edad<input type="number" id="age" min="14" max="99" inputmode="numeric"></label>
+    <label>Peso (kg)<input type="number" id="kg" min="30" max="250" inputmode="decimal"></label>
+    <label>Estatura (cm)<input type="number" id="cm" min="120" max="230" inputmode="numeric"></label>
+  </div>
+  <h2>Actividad física actual</h2>
+  <div class="opts">
+    <label><input type="radio" name="act" value="0"><span>Casi nada</span></label>
+    <label><input type="radio" name="act" value="1" checked><span>1 o 2 veces por semana</span></label>
+    <label><input type="radio" name="act" value="2"><span>3 o más veces</span></label>
+  </div>
+  <h2>Sueño y trabajo</h2>
+  <div class="opts">
+    <label><input type="radio" name="slp" value="0"><span>Duermo menos de 6 h</span></label>
+    <label><input type="radio" name="slp" value="1"><span>Duermo 6 a 7 h</span></label>
+    <label><input type="radio" name="slp" value="2" checked><span>Duermo 7 h o más</span></label>
+  </div>
+  <div class="opts" style="margin-top:8px">
+    <label><input type="radio" name="job" value="0"><span>Casi todo el día sentado</span></label>
+    <label><input type="radio" name="job" value="1" checked><span>Trabajo mixto</span></label>
+    <label><input type="radio" name="job" value="2"><span>De pie o en movimiento</span></label>
+  </div>
+  <h2>Lesiones o molestias</h2>
+  <div class="opts">
+    <label><input type="checkbox" name="inj" value="k"><span>Rodilla</span></label>
+    <label><input type="checkbox" name="inj" value="e"><span>Espalda baja</span></label>
+    <label><input type="checkbox" name="inj" value="h"><span>Hombro</span></label>
+    <label><input type="checkbox" name="inj" value="m"><span>Muñeca</span></label>
+    <label><input type="checkbox" name="inj" value="t"><span>Tobillo o pie</span></label>
+  </div>
+  <h2>Condiciones de salud</h2>
+  <div class="opts">
+    <label><input type="checkbox" name="cond" value="card"><span>Problema del corazón o dolor en el pecho</span></label>
+    <label><input type="checkbox" name="cond" value="diz"><span>Mareos o desmayos</span></label>
+    <label><input type="checkbox" name="cond" value="bp"><span>Presión alta</span></label>
+    <label><input type="checkbox" name="cond" value="dia"><span>Diabetes</span></label>
+    <label><input type="checkbox" name="cond" value="asm"><span>Asma o falta de aire</span></label>
+    <label><input type="checkbox" name="cond" value="emb"><span>Embarazo o posparto reciente</span></label>
+    <label><input type="checkbox" name="cond" value="ok"><span>Mi médico me autorizó a entrenar</span></label>
+  </div>
+  <p class="lead" style="margin-top:10px;font-size:.9rem">La app ajusta nivel, impacto y descansos con estos datos, pero no reemplaza una valoración médica. Nada sale de este dispositivo. <label><input type="checkbox" id="rem"> Recordar mi perfil en este dispositivo</label>. Tu historial de sesiones siempre se guarda aquí. <button type="button" class="link" id="wipe">Borrar mis datos</button> borra perfil e historial.</p>
+  </details>
+  <p id="msg" class="warn hidden" role="alert"></p>
+  <h2>Estilo</h2>
+  <div class="opts">
+    <label><input type="radio" name="mode" value="mix" checked><span>HIIT y fuerza</span></label>
+    <label><input type="radio" name="mode" value="h"><span>Solo HIIT</span></label>
+    <label><input type="radio" name="mode" value="s"><span>Solo fuerza</span></label>
+  </div>
+  <p class="lead" style="margin-top:10px;font-size:.9rem">El HIIT son intervalos intensos para el corazón. La fuerza usa más tiempo de trabajo y descansos más largos. En la rutina combinada se alternan.</p>
+  <h2>Enfoque</h2>
+  <div class="opts" data-k="focus">
+    <label><input type="radio" name="focus" value="full" checked><span>Cuerpo completo</span></label>
+    <label><input type="radio" name="focus" value="legs"><span>Piernas y glúteos</span></label>
+    <label><input type="radio" name="focus" value="upper"><span>Tren superior</span></label>
+    <label><input type="radio" name="focus" value="core"><span>Abdomen</span></label>
+  </div>
+  <h2>Duración</h2>
+  <div class="opts">
+    <label><input type="radio" name="mins" value="10"><span>10 min</span></label>
+    <label><input type="radio" name="mins" value="20" checked><span>20 min</span></label>
+    <label><input type="radio" name="mins" value="30"><span>30 min</span></label>
+  </div>
+  <h2>Nivel</h2>
+  <div class="opts">
+    <label><input type="radio" name="lvl" value="a" checked><span>Automático</span></label>
+    <label><input type="radio" name="lvl" value="0"><span>Principiante</span></label>
+    <label><input type="radio" name="lvl" value="1"><span>Intermedio</span></label>
+    <label><input type="radio" name="lvl" value="2"><span>Avanzado</span></label>
+  </div>
+  <p class="lead" id="lvnote" style="margin-top:10px;font-size:.9rem"></p>
+  <button class="main" id="start">Empezar rutina</button>
+  <div class="cal" id="cal" role="img" aria-label="Historial de las últimas 4 semanas"></div>
+  <p class="streak" id="streak"></p>
+</section>
+
+<section id="prev" class="hidden">
+  <h1>Tu rutina</h1>
+  <p class="lead" id="pTxt"></p>
+  <p class="note" id="pNote" style="margin-top:8px"></p>
+  <ul class="plist" id="pList"></ul>
+  <button class="main" id="go">Comenzar</button>
+  <div class="ctrl" style="margin-top:12px"><button id="regen">Regenerar</button><button id="back">Volver</button></div>
+</section>
+
+<section id="run" class="hidden" aria-live="off">
+  <p class="note" id="adj"></p>
+  <div class="bar" id="bar"></div>
+  <div class="phase" id="phase"></div>
+  <div class="name" id="name"></div>
+  <p class="cue" id="cue"></p>
+  <a id="demo" target="_blank" rel="noopener">Ver cómo se hace</a>
+  <div id="figw" class="figw hidden" aria-hidden="true"><svg viewBox="0 0 120 80"><line class="gl" x1="0" y1="73" x2="120" y2="73"/><path id="fa2" class="lb far"/><path id="fl2" class="lb far"/><path id="tr" class="lb"/><path id="fa1" class="lb"/><path id="fl1" class="lb"/><circle id="hd" r="6"/></svg></div>
+  <div class="ring" id="ring">
+    <svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="52"/><circle class="fg" id="fg" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="0"/></svg>
+    <b id="count">0</b>
+  </div>
+  <p class="next" id="next"></p>
+  <div class="ctrl">
+    <button id="pause">Pausar</button>
+    <button id="skip">Saltar</button>
+    <button id="vz">Voz: no</button>
+    <button id="snd">Sonido: sí</button>
+    <button id="quit">Salir</button>
+  </div>
+</section>
+
+<section id="end" class="hidden">
+  <h1>Rutina completa</h1>
+  <p class="lead">Buen trabajo. Toma agua y estira unos minutos antes de continuar con tu día.</p>
+  <p class="lead" id="up"></p>
+  <div class="sum">
+    <div><strong id="sEx">0</strong>ejercicios x rondas</div>
+    <div><strong id="sMin">0</strong>minutos</div>
+    <div><strong id="sDays">0</strong>sesiones esta semana</div>
+  </div>
+  <div id="fb" class="hidden">
+    <h2>¿Cómo se sintió?</h2>
+    <div class="ctrl">
+      <button type="button" data-f="e">Fácil</button>
+      <button type="button" data-f="j">Justa</button>
+      <button type="button" data-f="d">Difícil</button>
+      <button type="button" data-f="p">Sentí dolor</button>
+    </div>
+    <div id="pain" style="margin-top:10px"></div>
+    <p class="note" id="fbMsg" style="margin-top:10px"></p>
+  </div>
+  <button class="main" id="again">Hacer otra rutina</button>
+</section>
+</main>
+
+<script>
+const EX=[
+{n:"Jumping jacks",f:["full"],c:"Salta abriendo piernas y brazos a la vez. Aterriza suave."},
+{n:"Rodillas altas",f:["full","legs"],c:"Trota en el sitio llevando las rodillas a la altura de la cadera."},
+{n:"Escaladores",f:["full","core","upper"],c:"En plancha alta, lleva una rodilla al pecho y alterna rápido."},
+{n:"Burpees",f:["full","upper"],c:"Agáchate, estira las piernas atrás, regresa y salta. Sin salto si eres principiante."},
+{n:"Patadas de glúteo",f:["full","legs"],c:"Trota llevando los talones hacia los glúteos."},
+{n:"Sentadillas",f:["legs","full"],c:"Pies al ancho de hombros, baja la cadera atrás y mantén el pecho arriba."},
+{n:"Zancadas alternas",f:["legs","full"],c:"Da un paso largo, baja la rodilla trasera cerca del suelo y alterna."},
+{n:"Sentadilla sumo",f:["legs"],c:"Pies bien abiertos, puntas hacia fuera. Baja con la espalda recta."},
+{n:"Puente de glúteos",f:["legs","core"],c:"Boca arriba, rodillas dobladas. Sube la cadera y aprieta glúteos arriba."},
+{n:"Sentadilla en pared",f:["legs"],c:"Espalda en la pared, muslos paralelos al suelo. Aguanta sin moverte."},
+{n:"Elevación de talones",f:["legs"],c:"De pie, sube sobre las puntas y baja lento. Apóyate si necesitas equilibrio."},
+{n:"Flexiones",f:["upper","full"],c:"Cuerpo en línea recta. Si cuesta, apoya las rodillas."},
+{n:"Fondos de tríceps",f:["upper"],c:"Manos en el borde de una silla firme, baja el cuerpo doblando los codos."},
+{n:"Plancha con toque de hombro",f:["upper","core"],c:"En plancha alta, toca el hombro contrario sin girar la cadera."},
+{n:"Flexión pike",f:["upper"],c:"Cadera arriba en V invertida. Baja la cabeza al suelo y empuja de vuelta."},
+{n:"Superman",f:["upper","core"],c:"Boca abajo, levanta brazos y piernas a la vez y sostén un segundo."},
+{n:"Plancha",f:["core","upper"],c:"Antebrazos en el suelo, cuerpo recto de cabeza a talones. Respira."},
+{n:"Bicicleta abdominal",f:["core"],c:"Boca arriba, lleva codo a rodilla contraria en un pedaleo lento."},
+{n:"Elevación de piernas",f:["core"],c:"Boca arriba, sube las piernas rectas y bájalas sin tocar el suelo."},
+{n:"Crunch",f:["core"],c:"Manos junto a las sienes, sube el pecho sin jalar el cuello."},
+{n:"Pájaro-perro",f:["core"],c:"En cuatro apoyos, estira brazo y pierna contrarios y alterna."},
+{n:"Plancha lateral",f:["core"],c:"Apoya un antebrazo, eleva la cadera y mantén el cuerpo recto. Cambia de lado a mitad."}
+];
+EX.push(
+{n:"Sentadillas con salto",f:["legs","full"],c:"Baja en sentadilla y salta con fuerza. Aterriza con las rodillas flexionadas."},
+{n:"Saltos de patinador",f:["legs","full"],c:"Salta de lado a lado aterrizando en una pierna, como si patinaras."},
+{n:"Zancadas con salto",f:["legs"],c:"En zancada, salta y cambia de pierna en el aire. Hazlo sin salto si es muy intenso."},
+{n:"Sombra de boxeo",f:["upper","full"],c:"Rodillas flexionadas, lanza golpes rápidos al frente alternando brazos."},
+{n:"Plank jacks",f:["core","upper"],c:"En plancha alta, abre y cierra los pies de un salto sin subir la cadera."},
+{n:"Peso muerto a una pierna",f:["legs","full"],c:"Inclina el torso llevando una pierna atrás, con la espalda recta. Alterna lados."},
+{n:"Sentadilla lenta",f:["legs","full"],c:"Baja contando tres segundos, pausa abajo y sube con fuerza."},
+{n:"Flexión con rotación",f:["upper","full","core"],c:"Tras cada flexión, gira el torso y extiende un brazo hacia el techo."},
+{n:"Flexiones inclinadas",f:["upper"],c:"Manos en el borde de un sillón o una mesa firme. Baja controlado."}
+);
+const CARDIO=["Jumping jacks","Rodillas altas","Escaladores","Burpees","Patadas de glúteo","Sentadillas con salto","Saltos de patinador","Zancadas con salto","Sombra de boxeo","Plank jacks"];
+const TM=(lv,b)=>({h:{w:[30,40,45][lv],r:[20,20,15][lv]+b},s:{w:[40,45,50][lv],r:[30,25,20][lv]+b}});
+EX.push(
+{n:"Marcha rápida con brazos",f:["full","legs","upper"],c:"Marcha en el sitio a buen ritmo moviendo los brazos arriba y abajo. Sin impacto."},
+{n:"Paso lateral con brazos",f:["full","legs"],c:"Da pasos largos a un lado y al otro, abriendo y cerrando los brazos."},
+{n:"Rodillas al codo de pie",f:["core","full"],c:"De pie, lleva el codo hacia la rodilla contraria y alterna a ritmo constante."},
+{n:"Puente de glúteos con pausa",f:["full","legs","core"],c:"Sube la cadera, aprieta glúteos y sostén dos segundos arriba."}
+);
+CARDIO.push("Marcha rápida con brazos","Paso lateral con brazos","Rodillas al codo de pie");
+// i impacto, k rodilla, e espalda, h hombro, m muñeca, t tobillo, b boca arriba o presión abdominal
+const TAGS={"Jumping jacks":"ikt","Rodillas altas":"ikt","Escaladores":"mheb","Burpees":"ikmhetx","Patadas de glúteo":"ik","Sentadillas":"k","Zancadas alternas":"kt","Sentadilla sumo":"k","Puente de glúteos":"b","Sentadilla en pared":"ks","Elevación de talones":"t","Flexiones":"hm","Fondos de tríceps":"hm","Plancha con toque de hombro":"hmb","Flexión pike":"hm","Superman":"eb","Plancha":"ebs","Bicicleta abdominal":"be","Elevación de piernas":"eb","Crunch":"be","Plancha lateral":"hbse","Sentadillas con salto":"ikt","Saltos de patinador":"ikt","Zancadas con salto":"ikt","Sombra de boxeo":"h","Pájaro-perro":"mk","Plank jacks":"imhb","Peso muerto a una pierna":"e","Sentadilla lenta":"k","Flexión con rotación":"hm","Flexiones inclinadas":"hm","Puente de glúteos con pausa":"b"};
+const $=id=>document.getElementById(id);
+const val=n=>document.querySelector('input[name="'+n+'"]:checked').value;
+let plan=[],i=0,phase="prep",endAt=0,total=0,paused=false,left=0,timer=null,ac=null,startTs=0;
+
+function show(id){["setup","prev","run","end"].forEach(s=>$(s).classList.toggle("hidden",s!==id))}
+function beep(f,d){try{if(mute)return;ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.value=.15;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
+let voice=false,ctx=null,half=false,pausedMs=0,pt=0,skips=0,mute=false,wl=null;
+const shuf=a=>{for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
+const WU=[{n:"Marcha suave en el sitio",c:"Sube el ritmo poco a poco moviendo brazos y piernas."},{n:"Círculos de brazos",c:"Círculos amplios hacia adelante y luego hacia atrás.",g:"h"},{n:"Círculos de cadera",c:"Manos en la cintura, dibuja círculos grandes con la cadera."},{n:"Rotación de torso",c:"De pie, gira el torso suavemente a cada lado."}];
+const CD=[{n:"Respiración profunda",c:"Inhala por la nariz, exhala lento por la boca y suelta los hombros."},{n:"Estiramiento de isquiotibiales",c:"Sentado, estira una pierna e inclina el pecho hacia ella. Cambia a mitad.",g:"e"},{n:"Estiramiento de pecho",c:"Entrelaza las manos atrás y abre el pecho. Respira lento.",g:"h"},{n:"Estiramiento de cuádriceps",c:"De pie, lleva un talón al glúteo. Cambia de pierna a mitad.",g:"k"},{n:"Postura del niño",c:"De rodillas, siéntate sobre los talones y estira los brazos al frente.",g:"k"}];
+const EZ={"Flexiones":"apoya las rodillas.","Plancha":"apoya las rodillas.","Fondos de tríceps":"dobla poco los codos.","Zancadas alternas":"hazlas cortas y apóyate en una pared.","Sentadilla en pared":"baja solo hasta donde puedas sostener."};
+const SIDE=["Plancha lateral","Peso muerto a una pierna","Estiramiento de isquiotibiales","Estiramiento de cuádriceps"];
+const mkEx=(e,kd,pf,T)=>({...e,c:pf.lv===0&&EZ[e.n]?e.c+" Versión fácil: "+EZ[e.n]:e.c,k:kd,w:T[kd].w,r:T[kd].r});
+const dk=n=>{const x=new Date();x.setDate(x.getDate()-n);return x.toLocaleDateString("en-CA")};
+const hist=()=>{try{return JSON.parse(localStorage.getItem("eeh")||"{}")}catch(e){return{}}};
+const sv=h=>{try{localStorage.setItem("eeh",JSON.stringify(h))}catch(e){}};
+function wk(){const n=new Date(),s=new Date(n.getFullYear(),n.getMonth(),n.getDate()-(n.getDay()+6)%7);return(hist().dates||[]).filter(x=>new Date(x+"T00:00:00")>=s).length}
+// Poses [cadera x, y, torso, brazo cercano (2), brazo lejano (2), pierna cercana (2), pierna lejana (2)]; ángulos: 0 abajo, 90 derecha, 180 arriba
+const PL=[60,55,100,0,0,0,0,-62,-62,-62,-62];
+const POSE={
+"Plank jacks":[PL,[60,55,100,0,0,0,0,-72,-72,-50,-50]],
+"Plancha":[PL,[60,57,100,0,0,0,0,-62,-62,-62,-62]],
+"Escaladores":[[60,55,100,0,0,0,0,-62,-62,50,-58],[60,55,100,0,0,0,0,50,-58,-62,-62]],
+"Pájaro-perro":[[42,57,111,0,0,0,0,0,-90,0,-90],[42,57,111,0,0,90,90,-85,-85,0,-90]],
+"Superman":[[50,68,90,90,90,90,90,-90,-90,-90,-90],[50,66,100,110,110,110,110,-110,-110,-110,-110]],
+"Puente de glúteos":[[60,68,-90,90,90,90,90,145,20,145,20],[57,53,-55,90,90,90,90,70,15,70,15]],
+"Puente de glúteos con pausa":[[60,68,-90,90,90,90,90,145,20,145,20],[57,53,-55,90,90,90,90,70,15,70,15]],
+"Plancha lateral":[[60,57,-118,0,0,180,180,62,62,62,62],[60,60,-118,0,0,160,170,62,62,62,62]],
+"Peso muerto a una pierna":[[55,41,180,5,5,5,5,0,0,0,0],[55,41,95,0,0,0,0,0,0,-95,-95]],
+"Sombra de boxeo":[[60,42,175,30,150,30,150,20,-5,-25,0],[60,42,172,90,90,30,150,20,-5,-25,0]],
+"Bicicleta abdominal":[[60,66,-115,180,150,180,150,135,20,100,100],[60,66,-115,180,150,180,150,100,100,135,20]],
+"Jumping jacks":[[60,40,180,8,8,-8,-8,4,4,-4,-4,1],[60,38,180,150,150,-150,-150,24,24,-24,-24,1]],
+"Saltos de patinador":[[45,40,170,-30,-30,40,40,0,0,35,60,1],[75,40,190,30,30,-40,-40,-35,-60,0,0,1]],
+"Burpees":[[60,40,180,5,5,5,5,0,0,0,0],[50,52,105,5,5,5,5,70,-10,70,-10],PL,[50,52,105,5,5,5,5,70,-10,70,-10],[60,34,180,170,170,170,170,5,5,5,5]],
+"Rodillas altas":[[60,40,178,-35,-35,45,100,100,5,0,0],[60,40,178,45,100,-35,-35,0,0,100,5]],
+"Marcha rápida con brazos":[[60,40,178,-35,-35,45,100,60,0,0,0],[60,40,178,45,100,-35,-35,0,0,60,0]],
+"Patadas de glúteo":[[60,40,178,-35,-35,45,100,5,-140,0,0],[60,40,178,45,100,-35,-35,0,0,5,-140]],
+"Sentadillas":[[60,40,180,5,5,5,5,0,0,0,0],[48,52,140,90,90,90,90,75,-10,75,-10]],
+"Zancadas alternas":[[60,40,180,5,5,5,5,0,0,0,0],[58,52,180,5,5,5,5,85,0,-20,-90]],
+"Sentadilla sumo":[[60,44,180,10,10,-10,-10,22,22,-22,-22,1],[60,52,180,15,15,-15,-15,60,10,-60,-10,1]],
+"Crunch":[[60,68,-90,90,90,90,90,145,20,145,20],[60,68,-120,180,150,180,150,145,20,145,20]],
+"Elevación de piernas":[[60,68,-90,90,90,90,90,100,100,100,100],[60,68,-90,90,90,90,90,175,175,175,175]]
+};
+POSE["Sentadilla lenta"]=POSE["Sentadillas"];POSE["Zancadas con salto"]=POSE["Zancadas alternas"];
+let cur=null,rm=false;try{rm=matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){}
+const pp=(x,y,a,l)=>[x+l*Math.sin(a*Math.PI/180),y+l*Math.cos(a*Math.PI/180)];
+function limb(id,s,a,b,l1,l2){const m=pp(s[0],s[1],a,l1),e=pp(m[0],m[1],b,l2);$(id).setAttribute("d","M"+s[0]+" "+s[1]+"L"+m[0]+" "+m[1]+"L"+e[0]+" "+e[1])}
+function draw(p){
+  const h=[p[0],p[1]],n=pp(h[0],h[1],p[2],22),hd=pp(n[0],n[1],p[2],7);
+  $("tr").setAttribute("d","M"+h[0]+" "+h[1]+"L"+n[0]+" "+n[1]);
+  $("hd").setAttribute("cx",hd[0]);$("hd").setAttribute("cy",hd[1]);
+  limb("fa1",n,p[3],p[4],12,11);limb("fa2",n,p[5],p[6],12,11);
+  limb("fl1",h,p[7],p[8],15,14);limb("fl2",h,p[9],p[10],15,14);
+  ["fa2","fl2"].forEach(id=>$(id).classList.toggle("far",!p[11]));
+}
+function setFig(n){cur=POSE[n]||null;$("figw").classList.toggle("hidden",!cur);if(cur)draw(cur[0])}
+function fr(ts){if(cur&&!rm){const t=ts/1000,n=cur.length,a=cur[Math.floor(t)%n],b=cur[(Math.floor(t)+1)%n],k=(1-Math.cos((t%1)*Math.PI))/2;draw(a.map((v,j)=>j>10?v:v+(b[j]-v)*k))}requestAnimationFrame(fr)}
+requestAnimationFrame(fr);
+function speak(t){try{if(voice&&window.speechSynthesis){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="es-MX";speechSynthesis.speak(u)}}catch(e){}}
+function wake(){try{if(navigator.wakeLock)navigator.wakeLock.request("screen").then(l=>wl=l).catch(()=>{})}catch(e){}}
+function unwake(){try{if(wl)wl.release();wl=null}catch(e){}}
+function expand(){
+  const {mins,base,wu,cd}=ctx,d=base.length;
+  const mk=(a,k)=>a.map((e,p)=>({...e,k,w:30,r:0,rd:1,rn:1,p:p+1,pn:a.length}));
+  const main=Math.max(60,mins*60-(wu.length+cd.length)*30);
+  const rt=base.reduce((a,b)=>a+b.w+b.r,0),R=Math.max(1,Math.round(main/rt));
+  const per=Math.max(-5,Math.min(15,Math.round((main-R*rt)/(R*d))));
+  plan=mk(wu,"w");
+  for(let r=0;r<R;r++)base.forEach((b,p)=>plan.push({...b,r:Math.max(10,b.r+per)+(p===d-1&&r<R-1?10:0),rd:r+1,rn:R,p:p+1,pn:d}));
+  plan.push(...mk(cd,"c"));
+  ctx.R=R;
+}
+function preview(){
+  const {base,R,mins}=ctx;
+  $("pTxt").textContent=base.length+" ejercicios por ronda, "+R+(R===1?" ronda":" rondas")+", más calentamiento y enfriamiento. Duración aproximada: "+mins+" min.";
+  $("pNote").textContent=ctx.pf.note;
+  $("pList").innerHTML=base.map((b,k)=>'<li><span><b>'+b.n+'</b><small>'+(b.k==="s"?"Fuerza":"HIIT")+', <a href="https://www.youtube.com/results?search_query='+encodeURIComponent("cómo hacer "+b.n+" ejercicio en casa")+'" target="_blank" rel="noopener">Ver cómo</a></small></span><button type="button" data-k="'+k+'">Cambiar</button></li>').join("");
+  show("prev");
+}
+function build(pf){
+  const f=val("focus"),mins=+val("mins"),mode=val("mode"),T=TM(pf.lv,pf.bonus);
+  const sh=shuf;
+  const ok=e=>!pf.no.includes(e.n)&&![...(e.g||TAGS[e.n]||"")].some(c=>pf.avoid.has(c));
+  const pick=(c,g)=>sh(EX.filter(e=>CARDIO.includes(e.n)===c&&ok(e)&&e.f.includes(g)));
+  let H=pick(true,f),S=pick(false,f);
+  if(!H.length)H=pick(true,"full");
+  if(!S.length)S=pick(false,"full");
+  if(!H.length)H=S;if(!S.length)S=H;
+  if(pf.posture){const P=["Superman","Puente de glúteos","Puente de glúteos con pausa","Pájaro-perro"];S.sort((a,b)=>P.includes(b.n)-P.includes(a.n))}
+  let hi=0,si=0;
+  const d=mode==="mix"?(mins===10?4:mins===20?6:8):Math.min(mins===10?4:mins===20?6:8,(mode==="h"?H:S).length),base=[];
+  for(let k=0;k<d;k++){
+    const kd=mode==="mix"?(k%2?"s":"h"):mode,P=kd==="h"?H:S;
+    const e=P[(kd==="h"?hi++:si++)%P.length],x=T[kd];
+    base.push(mkEx(e,kd,pf,T));
+  }
+  ctx={pf,mins,mode,T,H,S,base,wu:shuf(WU.filter(ok)).slice(0,3),cd:shuf(CD.filter(ok)).slice(0,3)};expand();
+}
+function bar(){
+  const e=plan[i],s=i-e.p+1;$("bar").innerHTML=plan.slice(s,s+e.pn).map((_,k)=>'<i class="'+(s+k<i?"done":s+k===i?"now":"")+'"></i>').join("");
+}
+function setPhase(p){
+  phase=p;half=false;
+  const e=plan[i];
+  total=p==="prep"?5:p==="work"?e.w:e.r;
+  endAt=Date.now()+total*1000;
+  const rest=p!=="work",st=p==="work"&&e.k==="s";
+  $("ring").classList.toggle("rest",rest);$("ring").classList.toggle("str",st);$("phase").classList.toggle("str",st);
+  $("phase").classList.toggle("rest",rest);
+  $("phase").textContent=p==="prep"?"Prepárate":p==="work"?({s:"Fuerza",h:"HIIT",w:"Calentamiento",c:"Enfriamiento"}[e.k])+", "+(e.rn>1?"ronda "+e.rd+" de "+e.rn+", ":"")+"ejercicio "+e.p+" de "+e.pn:"Descansa";
+  const show=p==="rest"&&plan[i+1]?plan[i+1]:e;
+  $("name").textContent=show.n;
+  $("cue").textContent=show.c;
+  $("demo").href="https://www.youtube.com/results?search_query="+encodeURIComponent("cómo hacer "+show.n+" ejercicio en casa");setFig(show.n);
+  const nx=p==="work"?(plan[i+1]?"Sigue: "+plan[i+1].n:"Último ejercicio"):"";
+  $("next").textContent=nx;
+  bar();beep(p==="work"?880:520,.25);
+  try{if(!mute&&navigator.vibrate)navigator.vibrate(120)}catch(x){}
+  speak((p==="prep"?"Prepárate. ":p==="rest"?"Descansa. Sigue ":"")+show.n);
+  try{localStorage.setItem("eer",JSON.stringify({plan,i,skips,ctx:{mode:ctx.mode,R:ctx.R,base:ctx.base}}))}catch(x){}
+}
+function advance(){
+  if(phase==="prep"){setPhase("work")}
+  else if(phase==="work"){if(i>=plan.length-1)return finish();if(!plan[i].r){i++;setPhase("work")}else setPhase("rest")}
+  else{i++;setPhase("work")}
+}
+function tick(){
+  if(paused)return;
+  const ms=endAt-Date.now();
+  if(ms<=0){advance();return}
+  const s=Math.ceil(ms/1000),e=plan[i];
+  if(phase==="work"&&SIDE.includes(e.n)&&!half&&ms<=total*500){half=true;beep(740,.3);$("cue").textContent="¡Cambia de lado!";speak("Cambia de lado")}
+  if($("count").textContent!==String(s)){$("count").textContent=s;if(s<=3)beep(660,.1)}
+  $("fg").style.strokeDashoffset=326.7*(1-ms/(total*1000));
+}
+function begin(){
+  const pf=profile();
+  if(pf.block){$("msg").textContent=pf.block;$("msg").classList.remove("hidden");if(pf.f){$("prof").open=true;$(pf.f).focus()}else $("msg").scrollIntoView({block:"center"});return}
+  $("msg").classList.add("hidden");saveP();
+  build(pf);$("adj").textContent=pf.note;preview();
+}
+function go(){
+  i=0;paused=false;pausedMs=0;skips=0;startTs=Date.now();wake();
+  $("pause").textContent="Pausar";show("run");setPhase("prep");
+  clearInterval(timer);timer=setInterval(tick,200);tick();
+}
+function finish(){
+  clearInterval(timer);beep(988,.5);unwake();try{localStorage.removeItem("eer")}catch(e){}
+  const mainN=plan.filter(x=>"hs".includes(x.k)).length,counts=skips<=Math.floor(mainN*.2);
+  let up="";
+  if(counts){
+    const H=hist(),a=+val("act"),b=autoLv(a);
+    H.done=(H.done||0)+1;H.dates=[...(H.dates||[]).slice(-59),dk(0)];H.last={d:dk(0),hiit:ctx.mode!=="s"};sv(H);
+    if(val("lvl")==="a"&&autoLv(a)>b)up="¡Subiste de nivel! Tu próxima rutina será "+LN[autoLv(a)]+", siempre que tu perfil de salud lo permita.";
+  }else up="Saltaste muchos ejercicios, así que esta sesión no cuenta para tu progreso. Ajusta el nivel o la duración y vuelve a intentarlo cuando quieras.";
+  $("up").textContent=up;
+  $("sEx").textContent=ctx.base.length+" x "+ctx.R;
+  $("sMin").textContent=Math.max(1,Math.round((Date.now()-startTs-pausedMs)/60000));
+  $("sDays").textContent=wk()+" de 3";
+  $("fb").classList.remove("hidden");$("fbMsg").textContent="";$("pain").innerHTML="";
+  $("fb").querySelectorAll("[data-f]").forEach(x=>x.disabled=false);
+  show("end");
+}
+function streakText(){const w=wk(),ds=new Set(hist().dates||[]),n=new Date(),s=new Date(n.getFullYear(),n.getMonth(),n.getDate()-(n.getDay()+6)%7-21);let h="LMXJVSD".split("").map(x=>"<b>"+x+"</b>").join("");for(let k=0;k<28;k++){const d=new Date(s.getFullYear(),s.getMonth(),s.getDate()+k),key=d.toLocaleDateString("en-CA");h+='<i class="'+(ds.has(key)?"on":"")+(key===dk(0)?" today":"")+(d>n?" fut":"")+'" title="'+key+'"></i>'}$("cal").innerHTML=h;$("streak").textContent=(w?"Esta semana llevas "+w+" de 3 sesiones. ":"Meta semanal: 3 sesiones. ")+"Entre sesiones de HIIT conviene descansar al menos un día."}
+const chk=n=>[...document.querySelectorAll('input[name="'+n+'"]:checked')].map(x=>x.value);
+function profile(){
+  const age=+$("age").value,kg=+$("kg").value,cm=+$("cm").value;
+  const bad=!(age>=14&&age<=99)?"age":!(kg>=30&&kg<=250)?"kg":!(cm>=120&&cm<=230)?"cm":"";
+  if(bad)return{block:"Completa edad, peso y estatura con valores válidos para ajustar la rutina a ti.",f:bad};
+  const inj=chk("inj"),cond=chk("cond"),act=+val("act"),imc=kg/((cm/100)**2),want=val("lvl")==="a"?autoLv(act):+val("lvl"),ok=cond.includes("ok");
+  if((cond.includes("card")||cond.includes("diz"))&&!ok)return{block:"Por lo que marcaste, consulta a un médico antes de entrenar. Cuando te autorice, marca «Mi médico me autorizó a entrenar» y la app armará una rutina suave."};
+  let lv=want,bonus=0,low=false;
+  const why=[],cap=(m,t)=>{if(lv>m){lv=m;if(t&&!why.includes(t))why.push(t)}};
+  if(act===0)cap(0,"tu poca actividad actual");if(act===1)cap(1,"tu actividad actual");
+  if(age>=65){cap(0,"tu edad");low=true;bonus=10}else if(age>=50){cap(1,"tu edad");low=true;bonus=5}
+  if(imc>=35){cap(0,"tu peso y estatura (IMC)");low=true;bonus=10}else if(imc>=30){cap(1,"tu peso y estatura (IMC)");low=true;bonus=Math.max(bonus,5)}
+  const med=cond.filter(c=>c!=="ok"),slp=+val("slp"),job=+val("job");
+  if(slp===0){cap(1,"dormir poco");bonus=Math.max(bonus,5)}
+  const L0=hist().last;
+  if(L0&&L0.hiit&&(L0.d===dk(0)||L0.d===dk(1))&&val("mode")!=="s"){cap(1,"tu HIIT de hoy o ayer");bonus=Math.max(bonus,5)}
+  if(med.length){cap(0,"tus condiciones de salud");low=true;bonus=10}
+  const avoid=new Set(inj);if(lv===0)avoid.add("x");if(cond.includes("bp")||cond.includes("card"))avoid.add("s");if(low)avoid.add("i");if(cond.includes("emb"))avoid.add("b"),avoid.add("i");
+  const N={k:"la rodilla",e:"la espalda baja",h:"el hombro",m:"la muñeca",t:"el tobillo o pie"},parts=[];
+  if(lv<want)parts.push("bajé el nivel a "+["principiante","intermedio","avanzado"][lv]+" por "+why.join(", "));
+  if(avoid.has("i"))parts.push("sin saltos ni impacto");
+  if(inj.length)parts.push("evité ejercicios que cargan "+inj.map(x=>N[x]).join(", "));
+  if(cond.includes("emb"))parts.push("sin ejercicios boca arriba ni con presión en el abdomen");
+  if(slp===0)parts.push("dormiste poco, así que prioricé la recuperación");
+  if(job===0)parts.push("incluí ejercicios de postura y glúteos por tu trabajo sentado");
+  if(bonus)parts.push("descansos más largos");
+  if(med.some(c=>["bp","dia","asm","emb"].includes(c))&&!ok)parts.push("confirma con tu médico antes de entrenar");
+  const note=(parts.length?"Ajustes para ti: "+parts.join("; ")+". ":"Rutina sin ajustes especiales. ")+"Si sientes dolor, mareo o falta de aire, detente y descansa.";
+  return{lv,bonus,avoid,note,posture:job===0,no:hist().no||[]};
+}
+function saveP(){try{if(!$("rem").checked){localStorage.removeItem("eep");return}localStorage.setItem("eep",JSON.stringify({age:$("age").value,kg:$("kg").value,cm:$("cm").value,act:val("act"),slp:val("slp"),job:val("job"),inj:chk("inj"),cond:chk("cond")}))}catch(e){}}
+function loadP(){try{
+  const d=JSON.parse(localStorage.getItem("eep")||"null");if(!d)return;
+  $("age").value=d.age;$("kg").value=d.kg;$("cm").value=d.cm;$("rem").checked=true;$("prof").open=false;
+  document.querySelector('input[name="act"][value="'+d.act+'"]').checked=true;
+  ["slp","job"].forEach(n=>{const r=document.querySelector('input[name="'+n+'"][value="'+d[n]+'"]');if(r)r.checked=true});
+  document.querySelectorAll('input[name="inj"],input[name="cond"]').forEach(x=>x.checked=d.inj.includes(x.value)||d.cond.includes(x.value));
+}catch(e){}}
+$("wipe").onclick=()=>{
+  try{["eep","eeh","eec","eer"].forEach(k=>localStorage.removeItem(k))}catch(e){}$("rem").checked=false;lvNote();streakText();chkRes();
+  document.querySelectorAll('#setup input[type="number"]').forEach(x=>x.value="");
+  document.querySelectorAll('input[name="inj"],input[name="cond"]').forEach(x=>x.checked=false);
+};
+const LN=["principiante","intermedio","avanzado"];
+function doneN(){return hist().done||0}
+function autoLv(act){return Math.max(0,Math.min(2,(act===2?1:0)+Math.floor(doneN()/4)+(hist().bump||0)))}
+function lvNote(){
+  const n=doneN(),l=autoLv(+val("act"));
+  $("lvnote").textContent="Automático: empiezas según tu actividad y subes un nivel cada 4 rutinas completadas. Llevas "+n+(n===1?" rutina":" rutinas")+(l<2?"; faltan "+(4-n%4)+" para pasar a "+LN[l+1]+".":". Ya estás en el nivel más alto.");
+}
+document.querySelectorAll('input[name="act"]').forEach(x=>x.onchange=lvNote);
+$("start").onclick=begin;
+$("go").onclick=go;
+$("regen").onclick=()=>{build(ctx.pf);preview()};
+$("vz").onclick=()=>{voice=!voice;$("vz").textContent="Voz: "+(voice?"sí":"no");if(voice)speak("Voz activada");else try{speechSynthesis.cancel()}catch(e){}};
+function chkRes(){try{const r=JSON.parse(localStorage.getItem("eer")||"null");$("res").classList.toggle("hidden",!r||r.i>=r.plan.length-1)}catch(e){}}
+$("rs").onclick=()=>{try{
+  const r=JSON.parse(localStorage.getItem("eer"));
+  plan=r.plan;ctx=r.ctx;skips=r.skips||0;i=r.i;paused=false;pausedMs=0;startTs=Date.now();wake();
+  $("adj").textContent="Rutina retomada desde donde la dejaste.";$("pause").textContent="Pausar";$("res").classList.add("hidden");
+  show("run");setPhase("prep");clearInterval(timer);timer=setInterval(tick,200);tick();
+}catch(e){}};
+$("rd").onclick=()=>{try{localStorage.removeItem("eer")}catch(e){}$("res").classList.add("hidden")};
+$("back").onclick=()=>show("setup");
+$("snd").onclick=()=>{mute=!mute;$("snd").textContent="Sonido: "+(mute?"no":"sí")};
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!$("run").classList.contains("hidden"))wake()});
+$("pList").onclick=ev=>{
+  const b=ev.target.closest("button");if(!b)return;
+  const k=+b.dataset.k,o=ctx.base[k],P=o.k==="h"?ctx.H:ctx.S,used=ctx.base.map(x=>x.n),c=P.filter(x=>!used.includes(x.n));
+  if(!c.length){b.textContent="Sin más opciones";b.disabled=true;return}
+  ctx.base[k]=mkEx(c[0],o.k,ctx.pf,ctx.T);expand();preview();
+};
+$("fb").onclick=ev=>{
+  const b=ev.target.closest("button");if(!b)return;
+  const H=hist();
+  if(b.dataset.x){H.no=[...(H.no||[]),b.dataset.x];sv(H);$("fbMsg").textContent="Listo: no volveré a incluir «"+b.dataset.x+"».";b.remove();return}
+  const f=b.dataset.f;
+  if(f==="p"){$("pain").innerHTML=[...new Set(ctx.base.map(x=>x.n))].map(n=>'<button type="button" data-x="'+n+'">'+n+'</button>').join("");$("fbMsg").textContent="Toca el ejercicio que te dolió. Si el dolor continúa, consulta a un profesional.";return}
+  H.bump=Math.max(-2,Math.min(2,(H.bump||0)+(f==="e"?1:f==="d"?-1:0)));sv(H);
+  $("fb").querySelectorAll("[data-f]").forEach(x=>x.disabled=true);
+  $("fbMsg").textContent=f==="e"?"Gracias. En modo automático subiré un poco la intensidad.":f==="d"?"Gracias. En modo automático bajaré un poco la intensidad.":"Gracias. Mantendré el nivel.";
+  lvNote();
+};
+document.querySelectorAll(".opts").forEach((d,k)=>{let h=d.previousElementSibling;while(h&&h.tagName!=="H2")h=h.previousElementSibling;if(h){h.id=h.id||"h"+k;d.setAttribute("role","group");d.setAttribute("aria-labelledby",h.id)}});
+$("again").onclick=()=>{show("setup");streakText();lvNote()};
+$("quit").onclick=()=>{clearInterval(timer);unwake();try{speechSynthesis.cancel()}catch(e){}show("setup");chkRes()};
+$("skip").onclick=()=>{if(paused)return;if(phase==="work"&&"hs".includes(plan[i].k))skips++;advance()};
+$("pause").onclick=()=>{
+  if(!paused){paused=true;pt=Date.now();left=endAt-Date.now();$("pause").textContent="Continuar"}
+  else{paused=false;pausedMs+=Date.now()-pt;endAt=Date.now()+left;$("pause").textContent="Pausar"}
+};
+loadP();lvNote();streakText();chkRes();
+</script>
+<script>
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(console.error))}
+</script>
+</body>
+</html>
